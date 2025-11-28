@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Credly Badge Gallery</title>
+  <style>
+    body {
+      background: #000000; /* pure black */
+      color: #fff;
+      font-family: Arial, sans-serif;
+      display: flex;
+      flex-wrap: wrap;
+      gap: 24px;
+      justify-content: center;
+      padding: 30px;
+    }
+
+    .badge-card {
+      width: 220px;
+      background: #111;
+      border-radius: 12px;
+      overflow: hidden;
+      text-decoration: none;
+      color: #fff;
+      transition: transform 0.3s, box-shadow 0.3s;
+      padding: 12px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+
+    .badge-card img {
+      width: 150px;
+      border-radius: 8px;
+      box-shadow: 0 4px 10px rgba(255,255,255,0.2);
+      transition: transform 0.3s, box-shadow 0.3s;
+    }
+
+    .badge-card:hover img {
+      transform: scale(1.05) rotateY(5deg);
+      box-shadow: 0 8px 25px rgba(255,255,255,0.6);
+    }
+
+    .badge-card:hover {
+      outline: 2px solid #fff;
+    }
+
+    .badge-name {
+      font-weight: bold;
+      font-size: 1rem;
+      margin-top: 8px;
+      text-align: center;
+    }
+
+    .badge-issuer {
+      font-size: 0.85rem;
+      margin-top: 4px;
+      text-align: center;
+      color: #ccc;
+    }
+
+    .badge-date {
+      font-size: 0.8rem;
+      color: #aaa;
+      margin-top: 2px;
+    }
+
+    .badge-skills {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 4px;
+      margin-top: 8px;
+      justify-content: center;
+    }
+
+    .badge-skill {
+      background: #222;
+      border-radius: 12px;
+      padding: 2px 6px;
+      font-size: 0.7rem;
+      color: #fff;
+    }
+
+    @media (max-width: 600px) {
+      .badge-card {
+        width: 160px;
+      }
+      .badge-card img {
+        width: 120px;
+      }
+    }
+  </style>
+</head>
+<body>
+
+<div id="badge-gallery">Loading badges...</div>
+
+<script>
+const userId = 'a21cc3b0-923a-4ae8-85ab-be5b4f5952ee';
+
+async function fetchBadges() {
+  const encodedUrl = encodeURIComponent(`https://www.credly.com/users/${userId}/badges.json`);
+  const proxyUrl = `https://api.allorigins.win/get?url=${encodedUrl}`;
+
+  try {
+    const res = await fetch(proxyUrl);
+    const data = await res.json();
+    const badgesRaw = JSON.parse(data.contents).data;
+
+    const gallery = document.getElementById('badge-gallery');
+    gallery.innerHTML = '';
+
+    badgesRaw.forEach(item => {
+      const badge = document.createElement('a');
+      badge.href = `https://www.credly.com/badges/${item.id}/public_url`;
+      badge.target = '_blank';
+      badge.className = 'badge-card';
+      badge.innerHTML = `
+        <img src="${item.image_url}" alt="${item.badge_template.name}">
+        <div class="badge-name">${item.badge_template.name}</div>
+        <div class="badge-issuer">Issued by: ${item.issuer.entities.map(e => e.entity.name).join(', ')}</div>
+        <div class="badge-date">${item.issued_at_date}</div>
+        <div class="badge-skills">
+          ${item.badge_template.skills.map(skill => `<div class="badge-skill">${skill.name}</div>`).join('')}
+        </div>
+      `;
+      gallery.appendChild(badge);
+    });
+
+  } catch (error) {
+    document.getElementById('badge-gallery').innerText = 'Failed to load badges.';
+    console.error('Error fetching badges:', error);
+  }
+}
+
+fetchBadges();
+</script>
+
+</body>
+</html>
