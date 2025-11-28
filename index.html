@@ -3,6 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Credly Badge Gallery</title>
   <style>
     body {
       background: #000;
@@ -14,10 +15,9 @@
       justify-content: center;
     }
 
-    /* === GRID CONTAINER === */
     #badge-gallery {
       display: grid;
-      grid-template-columns: repeat(3, 1fr); /* 3 per row */
+      grid-template-columns: repeat(3, 1fr);
       gap: 24px;
       width: 100%;
       max-width: 1100px;
@@ -25,26 +25,26 @@
 
     @media (max-width: 900px) {
       #badge-gallery {
-        grid-template-columns: repeat(2, 1fr); /* 2 per row */
+        grid-template-columns: repeat(2, 1fr);
       }
     }
 
     @media (max-width: 600px) {
       #badge-gallery {
-        grid-template-columns: repeat(1, 1fr); /* 1 per row */
+        grid-template-columns: repeat(1, 1fr);
       }
     }
 
-    /* === BADGE CARD === */
+    /* === BADGE CARD (transparent now) === */
     .badge-card {
-      background: #111;
+      background: transparent;   
       border-radius: 12px;
       padding: 16px;
       text-align: center;
       text-decoration: none;
       color: #fff;
       transition: transform 0.3s, box-shadow 0.3s;
-      border: 1px solid #222;
+      border: none;  
     }
 
     .badge-card img {
@@ -81,7 +81,6 @@
       color: #aaa;
       margin-top: 4px;
     }
-
   </style>
 </head>
 <body>
@@ -91,7 +90,7 @@
 <script>
 async function fetchBadges() {
   try {
-    const res = await fetch('badges.json'); // Local JSON
+    const res = await fetch('badges.json');
     const badgesRaw = await res.json();
 
     const gallery = document.getElementById('badge-gallery');
