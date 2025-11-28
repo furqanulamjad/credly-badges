@@ -8,8 +8,8 @@
 <style>
     body {
         background: #111;
-        color: white;
         font-family: Arial, sans-serif;
+        color: white;
         margin: 0;
         padding: 20px;
     }
@@ -17,72 +17,70 @@
     h1 {
         text-align: center;
         margin-bottom: 30px;
+        color: #fff;
     }
 
-    /* GRID: 3 per row */
+    /* 3 per row */
     .badge-grid {
         display: grid;
-        grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+        grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
         gap: 20px;
-        max-width: 1200px;
+        max-width: 1300px;
         margin: auto;
     }
 
     .badge-card {
-        background: #1a1a1a;
-        border-radius: 14px;
+        background: #1c1c1c;
+        border-radius: 18px;
         padding: 20px;
-        box-shadow: 0 0 20px rgba(255,255,255,0.05);
-        text-align: center;
-        transition: transform 0.2s ease, box-shadow 0.3s ease;
+        box-shadow: 0 0 20px rgba(255,255,255,0.08);
+        transition: transform .2s ease, box-shadow .2s ease;
     }
 
     .badge-card:hover {
-        transform: translateY(-5px);
-        box-shadow: 0 0 25px rgba(255,255,255,0.25);
+        transform: translateY(-6px);
+        box-shadow: 0 0 30px rgba(255,255,255,0.25);
     }
 
-    .badge-image {
-        width: 110px;
-        height: 110px;
+    .banner {
+        width: 140px;
+        height: 140px;
+        border-radius: 12px;
         object-fit: cover;
-        border-radius: 50%;
         margin-bottom: 15px;
         background: #000;
+        display: block;
+        margin-left: auto;
+        margin-right: auto;
     }
 
-    .date {
+    .title {
+        font-size: 18px;
+        text-align: center;
+        margin-bottom: 6px;
+    }
+
+    .meta {
+        text-align: center;
         color: #bbb;
         font-size: 14px;
-    }
-
-    .issuer {
-        margin-top: 5px;
-        font-size: 14px;
-        color: #9bbcf8;
-    }
-
-    .description {
-        font-size: 13px;
-        margin: 10px 0 14px;
-        color: #ddd;
-        line-height: 1.4;
+        margin-bottom: 10px;
     }
 
     .btn {
-        display: inline-block;
-        margin-top: 10px;
-        padding: 8px 14px;
+        display: block;
+        text-align: center;
         background: #3a6df0;
+        padding: 10px 0;
+        border-radius: 8px;
         color: white;
-        border-radius: 6px;
         text-decoration: none;
-        font-size: 14px;
-        transition: background 0.2s;
+        margin-top: 10px;
+        transition: background .2s;
     }
 
     .btn:hover {
-        background: #5a85ff;
+        background: #5c87ff;
     }
 </style>
 
@@ -97,36 +95,37 @@
 async function loadBadges() {
     try {
         const response = await fetch("badges.json");
-        const data = await response.json();
+        const json = await response.json();
+
+        const list = json.data;
 
         const container = document.getElementById("badgeContainer");
         container.innerHTML = "";
 
-        data.data.forEach(badge => {
-            const card = document.createElement("div");
-            card.className = "badge-card";
+        list.forEach(badge => {
+            const item = document.createElement("div");
+            item.className = "badge-card";
 
-            card.innerHTML = `
-                <img src="${badge.image_url}" class="badge-image">
+            item.innerHTML = `
+                <img class="banner" src="${badge.image_url}" />
 
-                <h3>${badge.badge_template.name}</h3>
+                <div class="title">${badge.badge_template.name}</div>
 
-                <p class="date">${badge.issued_at_date}</p>
-
-                <p class="issuer">Issued by ${badge.issuer.entities[0].entity.name}</p>
-
-                <p class="description">${badge.badge_template.description}</p>
+                <div class="meta">
+                    ${badge.issued_at_date} • ${badge.issuer.entities[0].entity.name}
+                </div>
 
                 <a class="btn" href="https://www.credly.com/badges/${badge.id}/public_url" target="_blank">
                     View Badge
                 </a>
             `;
 
-            container.appendChild(card);
+            container.appendChild(item);
         });
-    } catch (err) {
+
+    } catch (e) {
         document.getElementById("badgeContainer").innerHTML = "Failed to load badges ❌";
-        console.error(err);
+        console.error(e);
     }
 }
 
