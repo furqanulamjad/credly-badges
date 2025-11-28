@@ -1,143 +1,136 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Credly Badge Gallery</title>
-  <style>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Credly Badges</title>
+
+<style>
     body {
-      background: #000;
-      color: #fff;
-      font-family: Arial, sans-serif;
-      padding: 30px;
-      margin: 0;
-      display: flex;
-      justify-content: center;
+        background: #111;
+        color: white;
+        font-family: Arial, sans-serif;
+        margin: 0;
+        padding: 20px;
     }
 
-    /* === GRID CONTAINER === */
-    #badge-gallery {
-      display: grid;
-      grid-template-columns: repeat(3, 1fr); /* 3 per row */
-      gap: 24px;
-      width: 100%;
-      max-width: 1100px;
+    h1 {
+        text-align: center;
+        margin-bottom: 30px;
     }
 
-    @media (max-width: 900px) {
-      #badge-gallery {
-        grid-template-columns: repeat(2, 1fr); /* 2 per row */
-      }
+    /* GRID: 3 per row */
+    .badge-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+        gap: 20px;
+        max-width: 1200px;
+        margin: auto;
     }
 
-    @media (max-width: 600px) {
-      #badge-gallery {
-        grid-template-columns: repeat(1, 1fr); /* 1 per row */
-      }
-    }
-
-    /* === BADGE CARD === */
     .badge-card {
-      background: #111;
-      border-radius: 12px;
-      padding: 16px;
-      text-align: center;
-      text-decoration: none;
-      color: #fff;
-      transition: transform 0.3s, box-shadow 0.3s;
-      border: 1px solid #222;
-    }
-
-    .badge-card img {
-      width: 150px;
-      border-radius: 10px;
-      box-shadow: 0 4px 15px rgba(255,255,255,0.25);
-      transition: transform 0.3s, box-shadow 0.3s;
-    }
-
-    .badge-card:hover img {
-      transform: scale(1.05) rotateY(5deg);
-      box-shadow: 0 10px 25px rgba(255,255,255,0.6);
+        background: #1a1a1a;
+        border-radius: 14px;
+        padding: 20px;
+        box-shadow: 0 0 20px rgba(255,255,255,0.05);
+        text-align: center;
+        transition: transform 0.2s ease, box-shadow 0.3s ease;
     }
 
     .badge-card:hover {
-      outline: 2px solid #fff;
-      transform: translateY(-4px);
+        transform: translateY(-5px);
+        box-shadow: 0 0 25px rgba(255,255,255,0.25);
     }
 
-    .badge-name {
-      margin-top: 8px;
-      font-size: 1rem;
-      font-weight: bold;
+    .badge-image {
+        width: 110px;
+        height: 110px;
+        object-fit: cover;
+        border-radius: 50%;
+        margin-bottom: 15px;
+        background: #000;
     }
 
-    .badge-issuer {
-      margin-top: 4px;
-      font-size: 0.85rem;
-      color: #ccc;
+    .date {
+        color: #bbb;
+        font-size: 14px;
     }
 
-    .badge-date {
-      font-size: 0.8rem;
-      color: #aaa;
-      margin-top: 4px;
+    .issuer {
+        margin-top: 5px;
+        font-size: 14px;
+        color: #9bbcf8;
     }
 
-    .badge-skills {
-      display: flex;
-      flex-wrap: wrap;
-      justify-content: center;
-      gap: 5px;
-      margin-top: 10px;
+    .description {
+        font-size: 13px;
+        margin: 10px 0 14px;
+        color: #ddd;
+        line-height: 1.4;
     }
 
-    .badge-skill {
-      background: #222;
-      padding: 3px 7px;
-      border-radius: 12px;
-      font-size: 0.7rem;
+    .btn {
+        display: inline-block;
+        margin-top: 10px;
+        padding: 8px 14px;
+        background: #3a6df0;
+        color: white;
+        border-radius: 6px;
+        text-decoration: none;
+        font-size: 14px;
+        transition: background 0.2s;
     }
-  </style>
+
+    .btn:hover {
+        background: #5a85ff;
+    }
+</style>
+
 </head>
 <body>
 
-<div id="badge-gallery">Loading badges...</div>
+<h1>My Credly Badges</h1>
+
+<div id="badgeContainer" class="badge-grid">Loading badges...</div>
 
 <script>
-async function fetchBadges() {
-  try {
-    const res = await fetch('badges.json'); // Local JSON
-    const badgesRaw = await res.json();
+async function loadBadges() {
+    try {
+        const response = await fetch("badges.json");
+        const data = await response.json();
 
-    const gallery = document.getElementById('badge-gallery');
-    gallery.innerHTML = '';
+        const container = document.getElementById("badgeContainer");
+        container.innerHTML = "";
 
-    badgesRaw.data.forEach(item => {
-      const badge = document.createElement('a');
-      badge.href = `https://www.credly.com/badges/${item.id}/public_url`;
-      badge.target = '_blank';
-      badge.className = 'badge-card';
+        data.data.forEach(badge => {
+            const card = document.createElement("div");
+            card.className = "badge-card";
 
-      badge.innerHTML = `
-        <img src="${item.image_url}" alt="${item.badge_template.name}">
-        <div class="badge-name">${item.badge_template.name}</div>
-        <div class="badge-issuer">${item.issuer.entities.map(e => e.entity.name).join(', ')}</div>
-        <div class="badge-date">${item.issued_at_date}</div>
-        <div class="badge-skills">
-          ${item.badge_template.skills.map(skill => `<span class="badge-skill">${skill.name}</span>`).join('')}
-        </div>
-      `;
+            card.innerHTML = `
+                <img src="${badge.image_url}" class="badge-image">
 
-      gallery.appendChild(badge);
-    });
+                <h3>${badge.badge_template.name}</h3>
 
-  } catch (e) {
-    document.getElementById('badge-gallery').innerText = 'Failed to load badges.';
-    console.error(e);
-  }
+                <p class="date">${badge.issued_at_date}</p>
+
+                <p class="issuer">Issued by ${badge.issuer.entities[0].entity.name}</p>
+
+                <p class="description">${badge.badge_template.description}</p>
+
+                <a class="btn" href="https://www.credly.com/badges/${badge.id}/public_url" target="_blank">
+                    View Badge
+                </a>
+            `;
+
+            container.appendChild(card);
+        });
+    } catch (err) {
+        document.getElementById("badgeContainer").innerHTML = "Failed to load badges ❌";
+        console.error(err);
+    }
 }
 
-fetchBadges();
+loadBadges();
 </script>
 
 </body>
