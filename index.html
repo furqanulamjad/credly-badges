@@ -35,15 +35,16 @@
       }
     }
 
+    /* === BADGE CARD (transparent now) === */
     .badge-card {
-      background: transparent;
+      background: transparent;   
       border-radius: 12px;
       padding: 16px;
       text-align: center;
       text-decoration: none;
       color: #fff;
       transition: transform 0.3s, box-shadow 0.3s;
-      border: none;
+      border: none;  
     }
 
     .badge-card img {
@@ -58,8 +59,8 @@
       box-shadow: 0 10px 25px rgba(255,255,255,0.6);
     }
 
-    /* Removed outline, keep hover movement */
     .badge-card:hover {
+      outline: 0px solid #fff;
       transform: translateY(-4px);
     }
 
@@ -95,4 +96,30 @@ async function fetchBadges() {
     const gallery = document.getElementById('badge-gallery');
     gallery.innerHTML = '';
 
-    badge
+    badgesRaw.data.forEach(item => {
+      const badge = document.createElement('a');
+      badge.href = `https://www.credly.com/badges/${item.id}/public_url`;
+      badge.target = '_blank';
+      badge.className = 'badge-card';
+
+      badge.innerHTML = `
+        <img src="${item.image_url}" alt="${item.badge_template.name}">
+        <div class="badge-name">${item.badge_template.name}</div>
+        <div class="badge-issuer">${item.issuer.entities.map(e => e.entity.name).join(', ')}</div>
+        <div class="badge-date">${item.issued_at_date}</div>
+      `;
+
+      gallery.appendChild(badge);
+    });
+
+  } catch (e) {
+    document.getElementById('badge-gallery').innerText = 'Failed to load badges.';
+    console.error(e);
+  }
+}
+
+fetchBadges();
+</script>
+
+</body>
+</html>
