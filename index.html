@@ -4,11 +4,15 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Credly Badge Gallery</title>
+
+  <!-- Montserrat Font -->
+  <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;600;700&display=swap" rel="stylesheet">
+
   <style>
     body {
       background: #000;
       color: #fff;
-      font-family: Arial, sans-serif;
+      font-family: 'Montserrat', sans-serif;
       padding: 30px;
       margin: 0;
       display: flex;
@@ -49,14 +53,14 @@
     .badge-card img {
       width: 150px;
       border-radius: 10px;
-      box-shadow: none; /* removed shadow */
+      box-shadow: none;
       transition: transform 0.3s, outline 0.3s;
-      outline: none; /* no outline by default */
+      outline: none;
     }
 
     .badge-card:hover img {
       transform: scale(1.05) rotateY(5deg);
-      outline: 3px solid white; /* white outline hover effect */
+      outline: 3px solid white;
     }
 
     .badge-card:hover {
@@ -66,7 +70,7 @@
     .badge-name {
       margin-top: 8px;
       font-size: 1rem;
-      font-weight: bold;
+      font-weight: 600;
     }
 
     .badge-issuer {
