@@ -35,33 +35,34 @@
       }
     }
 
-    /* === BADGE CARD (transparent now) === */
     .badge-card {
-      background: transparent;   
+      background: transparent;
       border-radius: 12px;
       padding: 16px;
       text-align: center;
       text-decoration: none;
       color: #fff;
-      transition: transform 0.3s, box-shadow 0.3s;
-      border: none;  
+      transition: transform 0.3s, outline 0.3s;
+      border: none;
+      outline: none; /* no outline normally */
     }
 
     .badge-card img {
       width: 150px;
       border-radius: 10px;
-      box-shadow: 0 4px 15px rgba(255,255,255,0.25);
-      transition: transform 0.3s, box-shadow 0.3s;
+      box-shadow: none;       /* ← removed white shadow */
+      transition: transform 0.3s;
     }
 
     .badge-card:hover img {
       transform: scale(1.05) rotateY(5deg);
-      box-shadow: 0 10px 25px rgba(255,255,255,0.6);
     }
 
+    /* White outline ONLY when hovering */
     .badge-card:hover {
-      outline: 2px solid #fff;
       transform: translateY(-4px);
+      outline: 2px solid #fff;   /* ← added clean white outline */
+      outline-offset: 4px;
     }
 
     .badge-name {
@@ -112,14 +113,4 @@ async function fetchBadges() {
       gallery.appendChild(badge);
     });
 
-  } catch (e) {
-    document.getElementById('badge-gallery').innerText = 'Failed to load badges.';
-    console.error(e);
-  }
-}
-
-fetchBadges();
-</script>
-
-</body>
-</html>
+  } catch (e)
